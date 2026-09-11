@@ -9,7 +9,14 @@ entre supermercados: **Mercadona, Dia, Consum, Lidl, Aldi, Spar, Cash Lesco y Ca
 - **Tiendas**: elige una tienda y verás solo los productos que tienen precio en esa tienda,
   ordenados de más barato a más caro.
 - **Lista**: busca productos (o escribe uno libre) y añádelos a la lista de la compra, márcalos
-  como comprados, ajusta cantidades y consulta el total estimado.
+  como comprados, ajusta cantidades y consulta el total. Arriba de la lista puedes elegir en qué
+  tienda vas a comprar ("Automático" o una tienda concreta): en "Automático" ves todos los
+  artículos con su precio preferido o más barato; al elegir una tienda concreta, la lista se
+  filtra y solo se ven los artículos que salen más baratos justo en esa tienda (con el precio en
+  verde), con el total de esa selección al final de la lista.
+- Puedes añadir tus propias tiendas además de las 8 iniciales, desde "Gestionar tiendas" (en la
+  pestaña Tiendas o en la Lista). Las tiendas que tú añadas también se pueden borrar; las 8
+  iniciales no.
 - Buscador de productos en la pestaña Productos y en la Lista.
 - Instalable en el móvil/escritorio como aplicación (icono propio incluido) gracias a PWA.
 - Todos los datos se guardan en **Firebase Firestore**, así que se sincronizan entre

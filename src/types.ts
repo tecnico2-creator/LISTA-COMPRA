@@ -1,12 +1,9 @@
-export type StoreId =
-  | 'mercadona'
-  | 'dia'
-  | 'consum'
-  | 'lidl'
-  | 'aldi'
-  | 'spar'
-  | 'cash_lesco'
-  | 'cash_solano'
+/**
+ * Identificador de una tienda. Las 8 tiendas iniciales tienen un id fijo (ver
+ * utils/stores.ts), y las tiendas que el usuario añada desde la app tienen un id
+ * generado por Firestore. En ambos casos es simplemente un string.
+ */
+export type StoreId = string
 
 export interface StoreInfo {
   id: StoreId
@@ -15,6 +12,8 @@ export interface StoreInfo {
   bg: string
   text: string
   ring: string
+  /** true para las tiendas iniciales, que no se pueden borrar */
+  isDefault?: boolean
 }
 
 export type PriceMap = Partial<Record<StoreId, number>>

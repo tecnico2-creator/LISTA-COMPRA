@@ -1,6 +1,6 @@
 import { useState, type FormEvent } from 'react'
-import type { NewProduct, Product, StoreId } from '../types'
-import { STORES } from '../utils/stores'
+import type { NewProduct, Product, StoreId, StoreInfo } from '../types'
+import { useStoresContext } from '../context/StoresContext'
 
 interface ProductFormProps {
   initial?: Product | null
@@ -8,18 +8,19 @@ interface ProductFormProps {
   onSubmit: (product: NewProduct) => Promise<void>
 }
 
-function emptyPrices(): Partial<Record<StoreId, string>> {
-  return STORES.reduce((acc, s) => ({ ...acc, [s.id]: '' }), {} as Partial<Record<StoreId, string>>)
+function emptyPrices(stores: StoreInfo[]): Partial<Record<StoreId, string>> {
+  return stores.reduce((acc, s) => ({ ...acc, [s.id]: '' }), {} as Partial<Record<StoreId, string>>)
 }
 
 export function ProductForm({ initial, onCancel, onSubmit }: ProductFormProps) {
+  const { stores } = useStoresContext()
   const [name, setName] = useState(initial?.name ?? '')
   const [category, setCategory] = useState(initial?.category ?? '')
   const [preferredStore, setPreferredStore] = useState<StoreId | null>(initial?.preferredStore ?? null)
   const [priceInputs, setPriceInputs] = useState<Partial<Record<StoreId, string>>>(() => {
-    if (!initial) return emptyPrices()
-    const p = emptyPrices()
-    for (const s of STORES) {
+    if (!initial) return emptyPrices(stores)
+    const p = emptyPrices(stores)
+    for (const s of stores) {
       const v = initial.prices[s.id]
       p[s.id] = typeof v === 'number' ? String(v) : ''
     }
@@ -39,7 +40,7 @@ export function ProductForm({ initial, onCancel, onSubmit }: ProductFormProps) {
     }
 
     const prices: Record<string, number> = {}
-    for (const s of STORES) {
+    for (const s of stores) {
       const raw = priceInputs[s.id]
       if (raw === undefined || raw === '') continue
       const num = Number(raw.replace(',', '.'))
@@ -98,7 +99,7 @@ export function ProductForm({ initial, onCancel, onSubmit }: ProductFormProps) {
       <div>
         <span className="label">Precios por tienda (€)</span>
         <div className="grid grid-cols-2 gap-3">
-          {STORES.map((store) => (
+          {stores.map((store) => (
             <div key={store.id}>
               <label htmlFor={`price-${store.id}`} className="text-xs text-slate mb-1 block">
                 {store.name}
@@ -129,7 +130,7 @@ export function ProductForm({ initial, onCancel, onSubmit }: ProductFormProps) {
           onChange={(e) => setPreferredStore((e.target.value || null) as StoreId | null)}
         >
           <option value="">Automático (precio más bajo)</option>
-          {STORES.map((store) => (
+          {stores.map((store) => (
             <option key={store.id} value={store.id}>
               {store.name}
             </option>

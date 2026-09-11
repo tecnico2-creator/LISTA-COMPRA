@@ -1,26 +1,32 @@
 import { useMemo, useState } from 'react'
 import { SearchBar } from '../components/SearchBar'
 import { StoreBadge } from '../components/StoreBadge'
+import { AddStoreModal } from '../components/AddStoreModal'
 import { useProducts } from '../hooks/useProducts'
 import { useShoppingList } from '../hooks/useShoppingList'
-import { STORES } from '../utils/stores'
+import { useStoresContext } from '../context/StoresContext'
 import { formatPrice } from '../utils/price'
 import type { StoreId } from '../types'
 
 export function StoreViewPage() {
   const { products, loading, error } = useProducts()
   const { addItem } = useShoppingList()
-  const [storeId, setStoreId] = useState<StoreId>(STORES[0].id)
+  const { stores } = useStoresContext()
+  const [storeId, setStoreId] = useState<StoreId | null>(null)
   const [search, setSearch] = useState('')
   const [toast, setToast] = useState<string | null>(null)
+  const [manageOpen, setManageOpen] = useState(false)
+
+  const activeStoreId = storeId ?? stores[0]?.id ?? null
 
   const productsInStore = useMemo(() => {
+    if (!activeStoreId) return []
     const term = search.trim().toLowerCase()
     return products
-      .filter((p) => typeof p.prices[storeId] === 'number')
+      .filter((p) => typeof p.prices[activeStoreId] === 'number')
       .filter((p) => !term || p.name.toLowerCase().includes(term))
-      .sort((a, b) => (a.prices[storeId] as number) - (b.prices[storeId] as number))
-  }, [products, storeId, search])
+      .sort((a, b) => (a.prices[activeStoreId] as number) - (b.prices[activeStoreId] as number))
+  }, [products, activeStoreId, search])
 
   async function handleAddToList(productId: string, productName: string, category: string) {
     await addItem({ productId, productName, category, quantity: 1, checked: false })
@@ -31,10 +37,18 @@ export function StoreViewPage() {
   return (
     <div className="space-y-4">
       <div>
-        <p className="label mb-2">Elige una tienda</p>
+        <div className="flex items-center justify-between mb-2">
+          <p className="label mb-0">Elige una tienda</p>
+          <button
+            onClick={() => setManageOpen(true)}
+            className="text-xs font-medium text-slate hover:text-ink underline underline-offset-2"
+          >
+            Gestionar tiendas
+          </button>
+        </div>
         <div className="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1">
-          {STORES.map((store) => {
-            const isActive = store.id === storeId
+          {stores.map((store) => {
+            const isActive = store.id === activeStoreId
             return (
               <button
                 key={store.id}
@@ -49,6 +63,14 @@ export function StoreViewPage() {
               </button>
             )
           })}
+          <button
+            onClick={() => setManageOpen(true)}
+            className="shrink-0 rounded-full px-3.5 py-2 text-sm font-medium bg-white text-slate ring-1 ring-inset ring-black/10 hover:bg-black/5"
+            aria-label="Añadir tienda"
+            title="Añadir tienda"
+          >
+            + Tienda
+          </button>
         </div>
       </div>
 
@@ -76,10 +98,12 @@ export function StoreViewPage() {
               <p className="font-medium text-ink truncate">{product.name}</p>
               {product.category && <p className="text-xs text-slate truncate">{product.category}</p>}
             </div>
-            {product.preferredStore && product.preferredStore !== storeId && (
+            {product.preferredStore && product.preferredStore !== activeStoreId && (
               <StoreBadge storeId={product.preferredStore} size="sm" />
             )}
-            <span className="font-semibold text-ink">{formatPrice(product.prices[storeId])}</span>
+            <span className="font-semibold text-ink">
+              {formatPrice(activeStoreId ? product.prices[activeStoreId] : null)}
+            </span>
             <button
               onClick={() => handleAddToList(product.id, product.name, product.category)}
               className="h-9 w-9 shrink-0 flex items-center justify-center rounded-full bg-blush-100 text-rose-800 hover:bg-blush-200 transition-colors"
@@ -93,6 +117,8 @@ export function StoreViewPage() {
           </li>
         ))}
       </ul>
+
+      <AddStoreModal open={manageOpen} onClose={() => setManageOpen(false)} />
 
       {toast && (
         <div className="fixed bottom-24 left-1/2 -translate-x-1/2 bg-ink text-white text-sm px-4 py-2 rounded-full shadow-card z-50">

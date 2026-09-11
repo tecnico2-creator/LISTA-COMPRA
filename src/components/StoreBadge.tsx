@@ -1,8 +1,10 @@
 import type { StoreId } from '../types'
-import { STORE_MAP } from '../utils/stores'
+import { useStoresContext } from '../context/StoresContext'
 
 export function StoreBadge({ storeId, size = 'md' }: { storeId: StoreId | null; size?: 'sm' | 'md' }) {
-  if (!storeId) {
+  const { storeMap } = useStoresContext()
+
+  if (!storeId || !storeMap[storeId]) {
     return (
       <span className="inline-flex items-center rounded-full bg-black/5 text-slate px-2.5 py-1 text-xs font-medium">
         Sin tienda
@@ -10,7 +12,7 @@ export function StoreBadge({ storeId, size = 'md' }: { storeId: StoreId | null; 
     )
   }
 
-  const store = STORE_MAP[storeId]
+  const store = storeMap[storeId]
   const padding = size === 'sm' ? 'px-2 py-0.5 text-[11px]' : 'px-2.5 py-1 text-xs'
 
   return (

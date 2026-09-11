@@ -12,5 +12,8 @@ service cloud.firestore {
     match /shoppingList/{itemId} {
       allow read, write: if true;
     }
+    match /stores/{storeId} {
+      allow read, write: if true;
+    }
   }
 }
