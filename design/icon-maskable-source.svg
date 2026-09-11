@@ -1,0 +1,51 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="512" y2="512" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#D9F2E6" />
+      <stop offset="0.55" stop-color="#EFF6FB" />
+      <stop offset="1" stop-color="#F9E4DF" />
+    </linearGradient>
+    <linearGradient id="bagGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFFFFF" />
+      <stop offset="1" stop-color="#FBF7F4" />
+    </linearGradient>
+  </defs>
+
+  <!-- Full-bleed background (no rounded corners: OS applies its own mask shape) -->
+  <rect width="512" height="512" fill="url(#bg)" />
+
+  <!-- Everything below scaled ~78% and centered to sit inside the safe zone -->
+  <g transform="translate(256 266) scale(0.78) translate(-256 -256)">
+    <ellipse cx="256" cy="392" rx="118" ry="16" fill="#3E3A38" opacity="0.08" />
+
+    <path
+      d="M186 208 L186 160 C186 121 217 90 256 90 C295 90 326 121 326 160 L326 208"
+      fill="none"
+      stroke="#78C9A8"
+      stroke-width="22"
+      stroke-linecap="round"
+    />
+
+    <path
+      d="M150 208 H362 L344 372 C342 388 328 400 312 400 H200 C184 400 170 388 168 372 L150 208 Z"
+      fill="url(#bagGrad)"
+      stroke="#E9D4A3"
+      stroke-width="6"
+    />
+
+    <path d="M150 208 H362 L357 250 H155 Z" fill="#F4CFC7" opacity="0.55" />
+
+    <path
+      d="M207 300 L241 334 L307 262"
+      fill="none"
+      stroke="#78C9A8"
+      stroke-width="26"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+
+    <circle cx="392" cy="150" r="20" fill="#EEB6AA" />
+    <circle cx="130" cy="140" r="14" fill="#98CAE3" />
+    <circle cx="410" cy="230" r="11" fill="#DEC07A" />
+  </g>
+</svg>
