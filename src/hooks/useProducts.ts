@@ -41,6 +41,7 @@ export function useProducts() {
             category: data.category ?? '',
             prices: data.prices ?? {},
             preferredStore: data.preferredStore ?? null,
+            photo: data.photo ?? '',
             createdAt: data.createdAt?.toMillis?.() ?? undefined,
             updatedAt: data.updatedAt?.toMillis?.() ?? undefined,
           }

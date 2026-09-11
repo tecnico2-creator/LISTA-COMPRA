@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import { useShoppingList } from '../hooks/useShoppingList'
 import { useProducts } from '../hooks/useProducts'
 import { AddStoreModal } from '../components/AddStoreModal'
+import { ProductThumb } from '../components/ProductThumb'
 import { useStoresContext } from '../context/StoresContext'
 import { getBestPrice, formatPrice } from '../utils/price'
 import type { Product, ShoppingListItem, StoreId } from '../types'
@@ -210,6 +211,7 @@ export function ShoppingListPage() {
                   className="h-6 w-6 shrink-0 rounded-full border-2 border-mint-300 hover:bg-mint-100 transition-colors"
                   aria-label="Marcar como comprado"
                 />
+                <ProductThumb photo={productById.get(item.productId)?.photo} alt={item.productName} size="sm" />
                 <div className="min-w-0 flex-1">
                   <p className="font-medium text-ink truncate">{item.productName}</p>
                   <div className="flex items-center gap-1.5 mt-0.5 flex-wrap">

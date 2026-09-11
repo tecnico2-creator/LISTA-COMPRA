@@ -1,12 +1,26 @@
 import { useMemo, useState } from 'react'
 import { SearchBar } from '../components/SearchBar'
 import { ProductCard } from '../components/ProductCard'
+import { ProductListRow } from '../components/ProductListRow'
 import { Modal } from '../components/Modal'
 import { ProductForm } from '../components/ProductForm'
 import { ConfirmDialog } from '../components/ConfirmDialog'
 import { useProducts } from '../hooks/useProducts'
 import { useShoppingList } from '../hooks/useShoppingList'
 import type { NewProduct, Product } from '../types'
+
+type ViewMode = 'grid' | 'list'
+
+const VIEW_MODE_KEY = 'lista-compra:products-view-mode'
+
+function loadViewMode(): ViewMode {
+  try {
+    const saved = localStorage.getItem(VIEW_MODE_KEY)
+    return saved === 'list' ? 'list' : 'grid'
+  } catch {
+    return 'grid'
+  }
+}
 
 export function ProductsPage() {
   const { products, loading, error, addProduct, updateProduct, deleteProduct } = useProducts()
@@ -16,6 +30,17 @@ export function ProductsPage() {
   const [editing, setEditing] = useState<Product | null>(null)
   const [pendingDelete, setPendingDelete] = useState<Product | null>(null)
   const [toast, setToast] = useState<string | null>(null)
+  const [viewMode, setViewMode] = useState<ViewMode>(loadViewMode)
+
+  function changeViewMode(mode: ViewMode) {
+    setViewMode(mode)
+    try {
+      localStorage.setItem(VIEW_MODE_KEY, mode)
+    } catch {
+      // localStorage puede no estar disponible (modo privado, etc.); no pasa nada, se pierde
+      // la preferencia entre sesiones pero la app sigue funcionando.
+    }
+  }
 
   const filtered = useMemo(() => {
     const term = search.trim().toLowerCase()
@@ -63,6 +88,35 @@ export function ProductsPage() {
         <div className="flex-1">
           <SearchBar value={search} onChange={setSearch} />
         </div>
+        <div className="flex shrink-0 rounded-full bg-white ring-1 ring-inset ring-black/10 p-0.5">
+          <button
+            onClick={() => changeViewMode('grid')}
+            className={`h-8 w-8 flex items-center justify-center rounded-full transition-colors ${
+              viewMode === 'grid' ? 'bg-mint-200 text-emerald-900' : 'text-slate hover:bg-black/5'
+            }`}
+            aria-label="Ver en cuadrícula"
+            title="Ver en cuadrícula"
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="h-4 w-4">
+              <rect x="3.5" y="3.5" width="7" height="7" rx="1.5" />
+              <rect x="13.5" y="3.5" width="7" height="7" rx="1.5" />
+              <rect x="3.5" y="13.5" width="7" height="7" rx="1.5" />
+              <rect x="13.5" y="13.5" width="7" height="7" rx="1.5" />
+            </svg>
+          </button>
+          <button
+            onClick={() => changeViewMode('list')}
+            className={`h-8 w-8 flex items-center justify-center rounded-full transition-colors ${
+              viewMode === 'list' ? 'bg-mint-200 text-emerald-900' : 'text-slate hover:bg-black/5'
+            }`}
+            aria-label="Ver en lista"
+            title="Ver en lista"
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="h-4 w-4">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
+        </div>
         <button className="btn-primary shrink-0" onClick={openNew}>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="h-4 w-4">
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 5v14m-7-7h14" />
@@ -90,17 +144,31 @@ export function ProductsPage() {
         </div>
       )}
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        {filtered.map((product) => (
-          <ProductCard
-            key={product.id}
-            product={product}
-            onEdit={() => openEdit(product)}
-            onDelete={() => setPendingDelete(product)}
-            onAddToList={() => handleAddToList(product)}
-          />
-        ))}
-      </div>
+      {viewMode === 'grid' ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {filtered.map((product) => (
+            <ProductCard
+              key={product.id}
+              product={product}
+              onEdit={() => openEdit(product)}
+              onDelete={() => setPendingDelete(product)}
+              onAddToList={() => handleAddToList(product)}
+            />
+          ))}
+        </div>
+      ) : (
+        <div className="space-y-2">
+          {filtered.map((product) => (
+            <ProductListRow
+              key={product.id}
+              product={product}
+              onEdit={() => openEdit(product)}
+              onDelete={() => setPendingDelete(product)}
+              onAddToList={() => handleAddToList(product)}
+            />
+          ))}
+        </div>
+      )}
 
       <Modal
         open={formOpen}

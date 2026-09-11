@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from 'react'
 import type { NewProduct, Product, StoreId, StoreInfo } from '../types'
 import { useStoresContext } from '../context/StoresContext'
+import { ImagePicker } from './ImagePicker'
 
 interface ProductFormProps {
   initial?: Product | null
@@ -17,6 +18,7 @@ export function ProductForm({ initial, onCancel, onSubmit }: ProductFormProps) {
   const [name, setName] = useState(initial?.name ?? '')
   const [category, setCategory] = useState(initial?.category ?? '')
   const [preferredStore, setPreferredStore] = useState<StoreId | null>(initial?.preferredStore ?? null)
+  const [photo, setPhoto] = useState(initial?.photo ?? '')
   const [priceInputs, setPriceInputs] = useState<Partial<Record<StoreId, string>>>(() => {
     if (!initial) return emptyPrices(stores)
     const p = emptyPrices(stores)
@@ -58,6 +60,7 @@ export function ProductForm({ initial, onCancel, onSubmit }: ProductFormProps) {
         category: category.trim(),
         prices,
         preferredStore,
+        photo,
       })
     } catch (err) {
       console.error(err)
@@ -95,6 +98,8 @@ export function ProductForm({ initial, onCancel, onSubmit }: ProductFormProps) {
           placeholder="Ej. Lácteos"
         />
       </div>
+
+      <ImagePicker value={photo} onChange={setPhoto} />
 
       <div>
         <span className="label">Precios por tienda (€)</span>

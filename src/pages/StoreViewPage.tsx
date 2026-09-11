@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import { SearchBar } from '../components/SearchBar'
 import { StoreBadge } from '../components/StoreBadge'
+import { ProductThumb } from '../components/ProductThumb'
 import { AddStoreModal } from '../components/AddStoreModal'
 import { useProducts } from '../hooks/useProducts'
 import { useShoppingList } from '../hooks/useShoppingList'
@@ -94,6 +95,7 @@ export function StoreViewPage() {
       <ul className="space-y-2">
         {productsInStore.map((product) => (
           <li key={product.id} className="card p-3.5 flex items-center gap-3">
+            <ProductThumb photo={product.photo} alt={product.name} size="sm" />
             <div className="min-w-0 flex-1">
               <p className="font-medium text-ink truncate">{product.name}</p>
               {product.category && <p className="text-xs text-slate truncate">{product.category}</p>}

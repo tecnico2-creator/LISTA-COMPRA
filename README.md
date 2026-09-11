@@ -17,6 +17,11 @@ entre supermercados: **Mercadona, Dia, Consum, Lidl, Aldi, Spar, Cash Lesco y Ca
 - Puedes añadir tus propias tiendas además de las 8 iniciales, desde "Gestionar tiendas" (en la
   pestaña Tiendas o en la Lista). Las tiendas que tú añadas también se pueden borrar; las 8
   iniciales no.
+- En Productos puedes cambiar entre ver los productos en **cuadrícula** o en **lista** (el
+  icono junto al buscador), y ponerle una foto a cada producto (hecha con la cámara del móvil o
+  elegida de la galería) al crearlo o editarlo. La foto se guarda ya redimensionada y
+  comprimida directamente en el documento del producto en Firestore, así que no hace falta
+  configurar nada más en Firebase para esto.
 - Buscador de productos en la pestaña Productos y en la Lista.
 - Instalable en el móvil/escritorio como aplicación (icono propio incluido) gracias a PWA.
 - Todos los datos se guardan en **Firebase Firestore**, así que se sincronizan entre

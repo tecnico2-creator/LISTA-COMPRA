@@ -26,6 +26,8 @@ export interface Product {
   prices: PriceMap
   /** Tienda preferida del usuario, o null para usar siempre el precio más bajo */
   preferredStore: StoreId | null
+  /** Foto del producto como data URL (base64), ya redimensionada y comprimida. '' si no tiene. */
+  photo: string
   createdAt?: number
   updatedAt?: number
 }

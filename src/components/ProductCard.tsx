@@ -1,6 +1,7 @@
 import type { Product } from '../types'
 import { formatPrice, getBestPrice } from '../utils/price'
 import { StoreBadge } from './StoreBadge'
+import { ProductThumb } from './ProductThumb'
 
 interface ProductCardProps {
   product: Product
@@ -15,6 +16,8 @@ export function ProductCard({ product, onEdit, onDelete, onAddToList }: ProductC
 
   return (
     <div className="card p-4 flex flex-col gap-3">
+      {product.photo && <ProductThumb photo={product.photo} alt={product.name} size="lg" />}
+
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0">
           <h3 className="font-medium text-ink truncate">{product.name}</h3>
